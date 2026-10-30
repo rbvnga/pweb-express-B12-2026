@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
-import { Role, Lane } from "../generated/prisma/client.js";
+import { Role, Lane } from "../generated/prisma/enums.js";
 import { HttpError } from "../utils/httpError.js";
 import { sendSuccess } from "../utils/response.js";
 import { getPagination, buildMetadata } from "../utils/pagination.js";
