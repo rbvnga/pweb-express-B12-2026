@@ -7,6 +7,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { sendSuccess } from "./utils/response.js";
 import heroRoutes from "./routes/hero.routes.js";
 import skinRoutes from "./routes/skin.routes.js";
+import playerRoutes from "./routes/player.routes.js";
 import purchaseRoutes from "./routes/purchase.routes.js";
 import statisticsRoutes from "./routes/statistics.routes.js";
 
@@ -26,6 +27,7 @@ app.get("/health", async (_req, res) => {
 
 app.use("/api/heroes", heroRoutes);
 app.use("/api/skins", skinRoutes);
+app.use("/api/players", playerRoutes);
 app.use("/api/players", purchaseRoutes);
 app.use("/api/statistics", statisticsRoutes);
 
