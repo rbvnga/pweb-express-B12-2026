@@ -8,6 +8,17 @@ import { getPagination, buildMetadata } from "../utils/pagination.js";
 const roles = Object.values(Role) as string[];
 const lanes = Object.values(Lane) as string[];
 
+// Harga boleh kosong: "" / null / tidak dikirim -> null.
+// Selain itu harus bilangan bulat >= 0, kalau tidak -> 400
+const toPrice = (value: unknown): number | null => {
+  if (value === undefined || value === null || value === "") return null;
+  const price = Number(value);
+  if (!Number.isInteger(price) || price < 0) {
+    throw new HttpError(400, "priceBP dan priceDiamond harus bilangan bulat >= 0 atau dikosongkan");
+  }
+  return price;
+};
+
 export const getHeroes = async (req: Request, res: Response) => {
   const { page, limit, skip } = getPagination(req.query);
   const search = req.query.search ? String(req.query.search) : undefined;
@@ -52,6 +63,8 @@ export const createHero = async (req: Request, res: Response) => {
   if (!roles.includes(role)) throw new HttpError(400, `Role tidak valid. Pilihan: ${roles.join(", ")}`);
   if (!lanes.includes(lane)) throw new HttpError(400, `Lane tidak valid. Pilihan: ${lanes.join(", ")}`);
   if (!Number.isInteger(Number(releaseYear))) throw new HttpError(400, "releaseYear harus berupa angka");
+  const parsedPriceBP = toPrice(priceBP);
+  const parsedPriceDiamond = toPrice(priceDiamond);
 
   const existing = await prisma.hero.findUnique({ where: { name } });
   if (existing) throw new HttpError(409, "Nama hero sudah ada");
@@ -62,8 +75,8 @@ export const createHero = async (req: Request, res: Response) => {
       role,
       lane,
       releaseYear: Number(releaseYear),
-      priceBP: priceBP ?? null,
-      priceDiamond: priceDiamond ?? null,
+      priceBP: parsedPriceBP,
+      priceDiamond: parsedPriceDiamond,
     },
   });
 

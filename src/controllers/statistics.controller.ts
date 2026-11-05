@@ -19,7 +19,8 @@ export const getStatistics = async (_req: Request, res: Response) => {
       prisma.hero.groupBy({
         by: ["role"],
         _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
+        // Jumlah sama (ASSASSIN & MARKSMAN = 20) -> urut sesuai urutan enum Role
+        orderBy: [{ _count: { id: "desc" } }, { role: "asc" }],
       }),
     ]);
 
